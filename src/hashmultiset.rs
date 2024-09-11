@@ -13,18 +13,18 @@ use std::{
 /// ```text
 /// a == b -> f(a) == f(b)
 /// ```
-/// 
+///
 /// The HashMultiSet is implemented using a `HashMap` where the key is the element and the value is a `Vec` of the duplicate element.
 /// So, the HashMultiSet can store multiple copies of the same element.
 /// Inserting the duplicate element will cause alocate a new `Vec` and store the element in it.
 /// So, it is recommended to use [`HashBag`] from the `hashbag` crate if you want to store elements which implement the [`Copy`] trait.
 ///
 /// # Examples
-/// 
+///
 /// ```
 /// use neomultiset::HashMultiSet;
 /// let mut books = HashMultiSet::new();
-/// 
+///
 /// // Add Some Books
 /// books.insert("A Song of Ice and Fire");
 /// books.insert("A Song of Ice and Fire");
@@ -39,16 +39,16 @@ use std::{
 ///    println!("We have {} books, but The Blade Itself ain't one.",
 ///        books.len());
 /// }
-/// 
+///
 /// // Remove a book
 /// books.remove("The Name of the Wind");
 /// // The book still exists
 /// assert!(books.contains("The Name of the Wind"));
-/// 
+///
 /// // Remove all books with the same name
 /// books.remove_all("The Name of the Wind");
 /// assert!(!books.contains("The Name of the Wind"));
-/// 
+///
 /// // Iterate over everything
 /// for book in &books {
 ///    println!("{book}");
@@ -62,11 +62,11 @@ pub struct HashMultiSet<T, S = RandomState> {
 
 impl<T> HashMultiSet<T, RandomState> {
     /// Creates a new empty `HashMultiSet`.
-    /// 
+    ///
     /// The HashMultiSet is initially created with a capacity of 0, so it will not allocate until it is first inserted into.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use neomultiset::HashMultiSet;
     /// let multiset: HashMultiSet<i32> = HashMultiSet::new();
@@ -80,13 +80,13 @@ impl<T> HashMultiSet<T, RandomState> {
     }
 
     /// Creates a new empty `HashMultiSet` with the specified capacity.
-    /// 
+    ///
     /// The HashMultiSet will be able to hold at least `capacity` unique elements without reallocating.
     /// Noted that duplicate elements will be stored in a `Vec` so inserting the duplicate element will cause alocate a new `Vec`.
     /// If `capacity` is 0, the HashMultiSet will not allocate.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use neomultiset::HashMultiSet;
     /// let multiset: HashMultiSet<i32> = HashMultiSet::with_capacity(10);
@@ -102,9 +102,9 @@ impl<T> HashMultiSet<T, RandomState> {
 
 impl<T, S> HashMultiSet<T, S> {
     /// Returns the number of unique elements the set can hold without reallocating.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use neomultiset::HashMultiSet;
     /// let multiset: HashMultiSet<i32> = HashMultiSet::with_capacity(100);
@@ -115,7 +115,7 @@ impl<T, S> HashMultiSet<T, S> {
     }
 
     /// An iterator visiting all elements in arbitrary order. The iterator element type is &'a T.
-    /// 
+    ///
     /// # Examples
     /// ```
     /// use neomultiset::HashMultiSet;
@@ -124,24 +124,24 @@ impl<T, S> HashMultiSet<T, S> {
     /// multiset.insert(2);
     /// multiset.insert(2);
     /// multiset.insert(3);
-    /// 
+    ///
     /// // Will print in an arbitrary order.
     /// for x in multiset.iter() {
     ///    println!("{x}");
     /// }
     /// ```
-    /// 
+    ///
     /// # Performance
-    /// In the current implementation, over set takes O(capacity + len - uniaue_len) time instead of O(len) 
+    /// In the current implementation, over set takes O(capacity + len - uniaue_len) time instead of O(len)
     /// because it internally visits empty buckets too.
     pub fn iter(&self) -> Iter<'_, T> {
         self.data.keys().chain(self.data.values().flatten())
     }
 
     /// Returns the number of elements in the set, including duplicates.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use neomultiset::HashMultiSet;
     /// let mut multiset = HashMultiSet::new();
@@ -156,9 +156,9 @@ impl<T, S> HashMultiSet<T, S> {
     }
 
     /// Returns the number of unique elements in the set.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use neomultiset::HashMultiSet;
     /// let mut multiset = HashMultiSet::new();
@@ -173,9 +173,9 @@ impl<T, S> HashMultiSet<T, S> {
     }
 
     /// Returns true if the set contains no elements.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use neomultiset::HashMultiSet;
     /// let mut multiset = HashMultiSet::new();
@@ -192,42 +192,50 @@ impl<T, S> HashMultiSet<T, S> {
     }
 
     /// Retains only the elements specified by the predicate.
-    /// 
-    /// In other words, remove all elements e for which f(&e) returns false. 
+    ///
+    /// In other words, remove all elements e for which f(&e) returns false.
     /// The elements are visited in unsorted (and unspecified) order.
     /// Logical errors occur if the following are not met:
-    /// 
+    ///
     /// ```text
     /// e1 == e2 -> f(&e1) == f(&e2)
     /// ```
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use neomultiset::HashMultiSet;
-    /// 
+    ///
     /// let mut multiset = HashMultiSet::from([1, 2, 3, 3, 4, 4, 5, 6]);
     /// multiset.retain(|&x| x % 2 == 0);
     /// assert_eq!(multiset, HashMultiSet::from([2, 4, 4, 6]));
     /// ```
-    /// 
+    ///
     /// # Performance
-    /// 
+    ///
     /// In the current implementation, this operation takes O(capacity) time.
     pub fn retain<F>(&mut self, mut f: F)
     where
         F: FnMut(&T) -> bool,
     {
-        self.data.retain(|k, _| f(k));
+        let mut deleted = 0;
+        self.data.retain(|k, v| {
+            let t = f(k);
+            if !t {
+                deleted += v.len() + 1;
+            }
+            t
+        });
+        self.len -= deleted;
     }
 
     /// Clears the set, removing all values.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use neomultiset::HashMultiSet;
-    /// 
+    ///
     /// let mut multiset = HashMultiSet::new();
     /// multiset.insert(1);
     /// multiset.clear();
@@ -239,11 +247,11 @@ impl<T, S> HashMultiSet<T, S> {
     }
 
     /// Creates a new empty set which will use the given hasher to hash keys.
-    /// 
+    ///
     /// The set is also created with the default initial capacity.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use std::hash::RandomState;
     /// use neomultiset::HashMultiSet;
@@ -260,15 +268,15 @@ impl<T, S> HashMultiSet<T, S> {
     }
 
     /// Creates a new empty set with the specified capacity, using the given hasher to hash keys.
-    /// 
+    ///
     /// See [`.with_hasher()`](HashMultiSet::with_hasher) and [`.with_capacity()`](HashMultiSet::with_capacity) for more information.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use std::hash::RandomState;
     /// use neomultiset::HashMultiSet;
-    /// 
+    ///
     /// let s = RandomState::new();
     /// let mut set = HashMultiSet::with_capacity_and_hasher(10, s);
     /// set.insert(1);
@@ -281,13 +289,13 @@ impl<T, S> HashMultiSet<T, S> {
     }
 
     /// Returns a reference to the set's [`BuildHasher`].
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use std::hash::RandomState;
     /// use neomultiset::HashMultiSet;
-    /// 
+    ///
     /// let s = RandomState::new();
     /// let set: HashMultiSet<i32> = HashMultiSet::with_hasher(s);
     /// let hasher: &RandomState = set.hasher();
