@@ -22,7 +22,7 @@ use std::{
 /// # Examples
 ///
 /// ```
-/// use neomultiset::HashMultiSet;
+/// use ktvvtmultiset::HashMultiSet;
 /// let mut books = HashMultiSet::new();
 ///
 /// // Add Some Books
@@ -68,7 +68,7 @@ impl<T> HashMultiSet<T, RandomState> {
     /// # Examples
     ///
     /// ```
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     /// let multiset: HashMultiSet<i32> = HashMultiSet::new();
     /// ```
     #[inline]
@@ -88,7 +88,7 @@ impl<T> HashMultiSet<T, RandomState> {
     /// # Examples
     ///
     /// ```
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     /// let multiset: HashMultiSet<i32> = HashMultiSet::with_capacity(10);
     /// assert!(multiset.capacity() >= 10);
     /// ```
@@ -106,7 +106,7 @@ impl<T, S> HashMultiSet<T, S> {
     /// # Examples
     ///
     /// ```
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     /// let multiset: HashMultiSet<i32> = HashMultiSet::with_capacity(100);
     /// assert!(multiset.capacity() >= 100);
     /// ```
@@ -118,7 +118,7 @@ impl<T, S> HashMultiSet<T, S> {
     ///
     /// # Examples
     /// ```
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     /// let mut multiset = HashMultiSet::new();
     /// multiset.insert(1);
     /// multiset.insert(2);
@@ -143,7 +143,7 @@ impl<T, S> HashMultiSet<T, S> {
     /// # Examples
     ///
     /// ```
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     /// let mut multiset = HashMultiSet::new();
     /// multiset.insert(1);
     /// multiset.insert(2);
@@ -160,7 +160,7 @@ impl<T, S> HashMultiSet<T, S> {
     /// # Examples
     ///
     /// ```
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     /// let mut multiset = HashMultiSet::new();
     /// multiset.insert(1);
     /// multiset.insert(2);
@@ -177,7 +177,7 @@ impl<T, S> HashMultiSet<T, S> {
     /// # Examples
     ///
     /// ```
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     /// let mut multiset = HashMultiSet::new();
     /// assert!(multiset.is_empty());
     /// multiset.insert(1);
@@ -204,7 +204,7 @@ impl<T, S> HashMultiSet<T, S> {
     /// # Examples
     ///
     /// ```
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     ///
     /// let mut multiset = HashMultiSet::from([1, 2, 3, 3, 4, 4, 5, 6]);
     /// multiset.retain(|&x| x % 2 == 0);
@@ -234,7 +234,7 @@ impl<T, S> HashMultiSet<T, S> {
     /// # Examples
     ///
     /// ```
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     ///
     /// let mut multiset = HashMultiSet::new();
     /// multiset.insert(1);
@@ -254,7 +254,7 @@ impl<T, S> HashMultiSet<T, S> {
     ///
     /// ```
     /// use std::hash::RandomState;
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     ///
     /// let s = RandomState::new();
     /// let mut set = HashMultiSet::with_hasher(s);
@@ -275,7 +275,7 @@ impl<T, S> HashMultiSet<T, S> {
     ///
     /// ```
     /// use std::hash::RandomState;
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     ///
     /// let s = RandomState::new();
     /// let mut set = HashMultiSet::with_capacity_and_hasher(10, s);
@@ -294,7 +294,7 @@ impl<T, S> HashMultiSet<T, S> {
     ///
     /// ```
     /// use std::hash::RandomState;
-    /// use neomultiset::HashMultiSet;
+    /// use ktvvtmultiset::HashMultiSet;
     ///
     /// let s = RandomState::new();
     /// let set: HashMultiSet<i32> = HashMultiSet::with_hasher(s);
